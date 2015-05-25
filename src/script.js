@@ -1,5 +1,6 @@
 function init()
 {
+    var debug = true;
     //SET UP three JS SCENE
     var scene = new THREE.Scene();//CREATE NEW THREE JS SCENE
     //ADD FOG -> FogExp2 will not work proper on android stock browser!
@@ -83,6 +84,10 @@ function init()
             player.collider = new THREE.Box3().setFromObject(player);
             player.hit = false;
         
+            player.bbox = new THREE.BoundingBoxHelper( player, "#000000" );
+            player.bbox.update();
+            scene.add( player.bbox );
+        
         
         scene.add(player);
     };
@@ -125,6 +130,10 @@ function init()
             cube.shape = "cube";
         
             cube.collider = new THREE.Box3().setFromObject(cube);
+        
+            cube.bbox = new THREE.BoundingBoxHelper( cube, "#000000" );
+            cube.bbox.update();
+            scene.add( cube.bbox );
             
             levelGroup_1.add(cube);
     }
@@ -148,6 +157,10 @@ function init()
         
         if(player&&player.collider.isIntersectionBox(obj.collider))
         {
+            if(debug)
+            {
+                player.bbox.material.color.set("#fff")
+            };
             //COLLISION DETECTED
             collisionDetection(obj);
         };
@@ -169,11 +182,18 @@ function init()
             if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) 
             { 
                 //COLLISION OCCURED
-                //YOU ARE DEAD        
-                player.hit = true;
-                maxSpeed = 10;
-                player.visible = false;
-                shadowPlane.visible = false;
+                //YOU ARE DEAD
+                if(!debug)
+                {
+                    player.hit = true;
+                    maxSpeed = 10;
+                    player.visible = false;
+                    shadowPlane.visible = false;
+                }
+                else
+                {
+                    player.bbox.material.color.set("#ff0000")
+                }
                 
             };
         };
@@ -242,6 +262,9 @@ function init()
     
     //ADD NEW TIMER
     var clock = new THREE.Clock();
+    
+    document.getElementById("debug").onchange = function(){if(debug){debug = false;}else{debug=true;};}
+    
     //START RENDER
     update();
     function update()
@@ -249,6 +272,10 @@ function init()
              //GET DELTA TIME
             var delta = clock.getDelta();
             
+            if(debug)
+            {
+                delta = delta/4;
+            }
 
             //SPEED UP PLAYER
             if(playerSpeed.z != maxSpeed)
@@ -258,11 +285,21 @@ function init()
 
             if(player)
             {
-
                 player.position.y = .5+Math.cos(clock.getElapsedTime())/4;
                 shadowPlane.scale.x = 1+player.position.y*2;
                 shadowPlane.scale.z = 1+player.position.y*2;
-
+                
+                if(debug)
+                {
+                     player.bbox.material.color.set("#000000")
+                     player.bbox.visible = true;
+                    player.bbox.update();
+                }
+                else
+                {
+                    player.bbox.visible = false;
+                }
+                
                 //UPDATE COLLISION
                 player.collider.setFromObject( player );
                 
@@ -295,6 +332,16 @@ function init()
             //UPDATE LEVEL
             levelGroup_1.children.forEach(function(item) 
             {
+                if(debug)
+                {
+                    item.bbox.visible = true;
+                    item.bbox.update();
+                }
+                else
+                {
+                    item.bbox.visible = false;
+                }
+                
                 if(item.material.opacity < 1)
                 {
                     item.material.opacity += .05;
