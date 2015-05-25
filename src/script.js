@@ -275,7 +275,20 @@ function init()
             if(player.visible)
             {
                 score += (playerSpeed.z*delta)/30
-                 showScore.innerHTML = Math.round(score)
+                showScore.innerHTML = Math.round(score);
+                
+                //CONTROLLS
+                if(keys["37"])
+                {
+                    playerSpeed.x = 10;
+                    player.rotation.z = .1
+                }
+
+                if(keys["39"])
+                {
+                    playerSpeed.x = -10;
+                    player.rotation.z = -.1
+                }
             }
 
             //SPEED UP PLAYER
@@ -308,18 +321,6 @@ function init()
                 }
             }
 
-            //CONTROLLS
-            if(keys["37"])
-            {
-                playerSpeed.x = 10;
-                player.rotation.z = .1
-            }
-
-            if(keys["39"])
-            {
-                playerSpeed.x = -10;
-                player.rotation.z = -.1
-            }
 
 
             levelGroup_1.children.forEach(function(item) 
