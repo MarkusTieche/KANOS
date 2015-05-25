@@ -107,7 +107,6 @@ function init()
     
     //START POSITION OF A LEVEL GROUP
     var levelSpawn = -100;
-    var stageTimer = 1;
     
     //GET VISIBLE WIDTH AT levelSpawn POSITION
     var vFOV = camera.fov * Math.PI / 180; // convert vertical fov to radians
@@ -124,7 +123,6 @@ function init()
             cube.rotation.y = Math.random()*Math.PI;
             cube.material.opacity = 0;
             cube.shape = "cube";
-            cube.timer = 0;
         
             cube.collider = new THREE.Box3().setFromObject(cube);
             
@@ -141,15 +139,21 @@ function init()
             return color;
     };
     
+    
+    //BOX COLLISION
     function fastcollisionDetection(obj)
     {
+        //UPDATE COLLIDER DATA
         obj.collider.setFromObject( obj );
+        
         if(player&&player.collider.isIntersectionBox(obj.collider))
         {
+            //COLLISION DETECTED
             collisionDetection(obj);
-        }
-    }
+        };
+    };
     
+    //RAYCASTER COLLISION
     function collisionDetection(obj)
     {   
         var originPoint = player.position.clone(); //The object to check if it collides
@@ -160,19 +164,20 @@ function init()
             var directionVector = globalVertex.sub( player.position );
             var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
 
-            var collisionResults = ray.intersectObjects( [obj] );
+            var collisionResults = ray.intersectObjects( [obj] ); //ARRAY OF OBJECTS TO TEST COLLISION AGIANST
         
             if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) 
             { 
-            //YOU ARE DEAD        
+                //COLLISION OCCURED
+                //YOU ARE DEAD        
                 player.hit = true;
                 maxSpeed = 10;
                 player.visible = false;
                 shadowPlane.visible = false;
                 
-            }
-        }
-    }
+            };
+        };
+    };
     
     
     //INPUT
@@ -259,7 +264,7 @@ function init()
                 shadowPlane.scale.z = 1+player.position.y*2;
 
                 //UPDATE COLLISION
-                player.collider.center( player.position );
+                player.collider.setFromObject( player );
                 
                 if(player.hit)
                 {
@@ -287,7 +292,7 @@ function init()
                 player.rotation.z = -.1
             }
 
-
+            //UPDATE LEVEL
             levelGroup_1.children.forEach(function(item) 
             {
                 if(item.material.opacity < 1)
@@ -298,19 +303,12 @@ function init()
                 item.position.z += playerSpeed.z*delta;
                 item.position.x += playerSpeed.x*delta;
 
-                item.timer += delta;
-
                 fastcollisionDetection(item)
 
                 if(item.position.z > 10)
                 {
                     item.position.set((width/2+Math.random()*-width),item.position.y,levelSpawn+Math.random()*levelSpawn);
                     item.material.opacity = 0;
-
-                    if(item.timer >= stageTimer)
-                    {
-                    }
-
                 }
              })
         
