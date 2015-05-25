@@ -305,7 +305,7 @@ function init()
                 shadowPlane.scale.z = 1+player.position.y*2;
 
                 //UPDATE COLLISION
-                player.collider.center( player.position );
+                player.collider.setFromObject( player );
                 
                 if(player.hit)
                 {
