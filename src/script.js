@@ -62,7 +62,6 @@ function init()
     xhr.withCredentials = false;
     xhr.send( null );
     
-    var readytoPlay = false;
     
     //ADD PLAYER MODE TO SCENE
     var player;
@@ -83,7 +82,6 @@ function init()
         
             player.collider = new THREE.Box3().setFromObject(player);
             player.hit = false;
-            player.visible = false;
         
         
         scene.add(player);
@@ -98,7 +96,6 @@ function init()
     var shadowPlane = new THREE.Mesh(new THREE.PlaneBufferGeometry(4, 4), shadowMaterial);
         shadowPlane.rotation.x = -Math.PI/2;
         shadowPlane.position.set(0,.001,0);
-        shadowPlane.visible =false;
     
         scene.add(shadowPlane);
     
@@ -236,47 +233,17 @@ function init()
         
     };
     
-    //BUTTONS
-    document.getElementById("startBtn").onclick = startGame;
-    document.getElementById("startBtn").ontouchstart = startGame;
     
-    function startGame()
-    {
-        readytoPlay = true;
-        shadowPlane.visible =true;
-        player.visible = true;
-        document.getElementById("startScreen").style.visibility = "hidden";
-        document.getElementById("score").style.visibility = "visible";
-    }
-    
-    document.getElementById("top").onclick = restart;
-    document.getElementById("top").ontouchstart = restart;
-    
-    function restart()
-    {
-        document.getElementById("looseScreen").style.visibility = "hidden";
-        score = 0;
-        resetLevel();
-    }
     
     //ADD NEW TIMER
     var clock = new THREE.Clock();
-    var showScore = document.getElementById("score");
-    var score = 0;
     //START RENDER
     update();
     function update()
     {
-        if(readytoPlay)
-        {
              //GET DELTA TIME
             var delta = clock.getDelta();
             
-            if(player.visible)
-            {
-                score += (playerSpeed.z*delta)/30
-                 showScore.innerHTML = Math.round(score)
-            }
 
             //SPEED UP PLAYER
             if(playerSpeed.z != maxSpeed)
@@ -301,10 +268,9 @@ function init()
 
                 if(player.hit && playerSpeed.z == maxSpeed)
                 {
-                    document.getElementById("looseScreen").style.visibility = "visible";
-                    document.getElementById("highscore").innerHTML = showScore.innerHTML;
                     playerSpeed.x = 0;
                     player.hit = false;
+                    resetLevel();
                 }
             }
 
@@ -348,9 +314,6 @@ function init()
                 }
              })
         
-        
-        
-        }
         //UPDATE 3D SCENE
         renderer.render( scene, camera );
         
