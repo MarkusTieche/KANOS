@@ -25,12 +25,12 @@ function init()
     var ambientLight = new THREE.AmbientLight("#9e9e9e");
         scene.add(ambientLight);
     
-    //HANDLE WINDOW RESIZE
-	window.addEventListener('resize', function(){
-		renderer.setSize( window.innerWidth, window.innerHeight )
-		camera.aspect	= window.innerWidth / window.innerHeight
-		camera.updateProjectionMatrix();
-	}, false);
+//    //HANDLE WINDOW RESIZE
+//	window.addEventListener('resize', function(){
+//		renderer.setSize( window.innerWidth, window.innerHeight )
+//		camera.aspect	= window.innerWidth / window.innerHeight
+//		camera.updateProjectionMatrix();
+//	}, false);
     
     
     //ADD GROUND PLANE
